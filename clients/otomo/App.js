@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Home from './Screens/Home'
 import History from './Screens/History'
 import Detail from './Screens/Detail'
+import AddProduct from './Screens/addProduct'
 
 
 const AppStack= createStackNavigator({
@@ -24,8 +25,17 @@ const AppStack= createStackNavigator({
   
 })
 const HistoryStack= createStackNavigator({
-  Maps :{
+  History :{
     screen:History,
+    navigationOptions: {
+      headerShown: false
+    }
+  }
+
+})
+const productStack= createStackNavigator({
+  AddProduct :{
+    screen:AddProduct,
     navigationOptions: {
       headerShown: false
     }
@@ -62,6 +72,19 @@ const BottomNavigator = createBottomTabNavigator(
         ),
       },
     },
+    AddProduct: {
+    screen: productStack,
+    navigationOptions: {
+      tabBarLabel: 'addProduct',
+      tabBarIcon: ({tintColor}) => (
+        <Icon
+         
+          name="cart-arrow-up"
+          style={{color: tintColor, fontSize: 30}}
+        />
+      ),
+    },
+  }
 },
   {
     tabBarOptions: {

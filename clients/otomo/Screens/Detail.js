@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import response from './Data/data';
 import axios from 'axios';
 import {ScrollView} from 'react-native-gesture-handler';
 import {
@@ -22,7 +21,6 @@ import {
   ,RangeCalendar
 } from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import responses from './Data/data2';
 import SecondIcon from 'react-native-vector-icons/SimpleLineIcons';
 import getDirections from 'react-native-google-maps-directions';
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
@@ -35,13 +33,11 @@ export default class Detail extends Component {
   constructor() {
     super();
     this.state = {
-      data: [],
       response: [],
       isLoading: true,
       refreshing: false,
       horizontal: true,
       color: true,
-      responses,
       selectedStartDate: null,
       selectedEndDate: null,
     };
@@ -54,14 +50,9 @@ export default class Detail extends Component {
         isLoading: false,
       });
     }, 3000);
-    this.GetData();
-    this.GetDatase();
+    this.GetData()
   }
-  GetDatase = () => {
-    this.setState({
-      response: response,
-    });
-  };
+  
   GetData = () => {
     //Service to get the data from the server to render
 
@@ -87,16 +78,12 @@ export default class Detail extends Component {
   onRefresh() {
     //Clear old data of the list
 
-    this.setState({data: [], isLoading: true, response: []});
+    this.setState({ isLoading: true});
     //Call the Service to get the latest data
     this.GetData();
     this.GetDatase();
   }
-  changeColor = () => {
-    this.setState({
-      color: !this.setState.color,
-    });
-  };
+  
   handleGetDirections = () => {
     let propsData = this.props.navigation.getParam('data');
     console.log(propsData, 'part');
@@ -136,7 +123,17 @@ export default class Detail extends Component {
     }
   }
  
- 
+  dateFormats = date_data => {
+    let arrDate = String(date_data)
+      .slice(0, 10)
+      .split("/")
+      .reverse();
+
+    return arrDate;
+  };
+   formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  }
   
   render() {
     const propsData = this.props.navigation.getParam('data');
@@ -161,6 +158,7 @@ export default class Detail extends Component {
     let startDates  =  selectedStartDate ? selectedStartDate : '';
     let  endDates = selectedEndDate ? selectedEndDate: '';
     const diffDays = Math.round(Math.abs((Number(endDates)-Number(startDates)) / oneDay)+1)
+    const totalPrice= diffDays*propsData.price
     // let sumDate=Number(endDate)-Number(startDate)
     console.log('sum',Number(diffDays))
     // console.log(data);
@@ -177,7 +175,7 @@ export default class Detail extends Component {
       <View style={styles.MainContainer}>
         <ScrollView
           style={{backgroundColor: 'white'}}
-          showsVerticalScrollIndicator={false}
+          // showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={this.ListViewItemSeparator}
           enableEmptySections={true}
           // horizontal={this.state.isHorizontal}
@@ -237,7 +235,7 @@ export default class Detail extends Component {
             />
             <TouchableOpacity
               style={{backgroundColor: this.state.color ? 'white' : 'green'}}
-              onPress={() => this.changeColor()}>
+          >
               <Icon name="format-list-bulleted" size={30} />
             </TouchableOpacity>
           </View>
@@ -258,13 +256,13 @@ export default class Detail extends Component {
               <Layout style={{height: 20}}></Layout>
               <View style={{alignItems: 'center'}}>
                 <Text style={styles.title} category="h5">
-                  Hiace Commuter
+                  {propsData.product_name}
                 </Text>
                 <Layout style={{height: 20}}></Layout>
               </View>
               <Card style={{width: 300, marginHorizontal: 20, height: 330}}>
                 <Image
-                  source={{uri: propsData.image_url}}
+                  source={{uri: propsData.image}}
                   style={{
                     height: 140,
                     width: 250,
@@ -274,7 +272,7 @@ export default class Detail extends Component {
                   }}
                 />
                 <Image
-                  source={{uri: propsData.image_url}}
+                  source={{uri: propsData.image}}
                   style={{
                     height: 50,
                     width: 80,
@@ -296,7 +294,7 @@ export default class Detail extends Component {
                 <Text category="s2">Aturan</Text>
                 <View style={{height: 20}}></View>
                 <Card>
-                  <Text category="s2">Overtime akan dicharger</Text>
+                  <Text category="s2">{propsData.rules}</Text>
                 </Card>
                 <View style={{height: 20}}></View>
                 <Text category="s2">Aturan</Text>
@@ -311,19 +309,22 @@ export default class Detail extends Component {
                       justifyContent: 'space-between',
                     }}>
                     <Layout>
-                      <Text category="s2">bensin :</Text>
+                  <Text category="s2">bensin :</Text>
                       <Text category="s2">Jam Per Hari</Text>
                       <Text category="s2">Kapasitas Maksimal:</Text>
+                      <Text category="s2">Toll & Parking</Text>
                       <Text category="s2">Harus Deposit:</Text>
                       <Text category="s2">Asuransi:</Text>
                     </Layout>
                     <Layout>
-                      <Text category="s2">bensin :</Text>
-                      <Text category="s2">Jam Per Hari</Text>
-                      <Text category="s2">Kapasitas Maksimal:</Text>
-                      <Text category="s2">Harus Deposit:</Text>
-                      <Text category="s2">Asuransi:</Text>
+                      <Text category="s2"style={{fontWeight:"bold"}}>{propsData.fuel}</Text>
+                      <Text category="s2"style={{fontWeight:"bold"}}>{propsData.hoursperDay}</Text>
+                  <Text category="s2" style={{fontWeight:"bold"}}>{propsData.max_Capacity}-{propsData.max_secCapacity}Pax</Text>
+                  <Text category="s2" style={{fontWeight:"bold"}}>{propsData.toll_parkingCharge}</Text>
+                  <Text category="s2" style={{fontWeight:"bold"}}>{propsData.deposit}</Text>
+                  <Text category="s2" style={{fontWeight:"bold"}}>{propsData.insurance}</Text>
                     </Layout>
+                   
                     <Layout>
                       <SecondIcon name="question" size={16} />
                       <SecondIcon name="question" size={16} style={{top: 10}} />
@@ -401,9 +402,10 @@ export default class Detail extends Component {
           onDateChange={this.onDateChange}
         />
  
-        <View>
-                <Text>{startDate}</Text>
-                <Text>{endDate}</Text>
+        <View style={{alignItems:'center',paddingHorizontal:20}}>
+              <Text> Start Date:  {this.dateFormats(startDates)}</Text>
+               <Text>  End Date : {this.dateFormats(endDates)}</Text>
+               <Text>  Price : Rp. {this.formatNumber(totalPrice)}</Text>
         </View>
             </View>
           </View>
