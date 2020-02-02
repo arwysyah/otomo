@@ -54,27 +54,5 @@ module.exports = {
       response
     };
     res.json(form);
-  },
-
-  getWishlist: (res, response, status) => {
-    const form = {
-      status,
-      response
-    };
-    res.json(form);
-  },
-  postWishlist: (res, response, status) => {
-    const form = {
-      status,
-      response
-    };
-    res.json(form);
-  },
-  deleteWishlist: (res, response, status) => {
-    const form = {
-      status,
-      response
-    };
-    res.json(form);
   }
 };

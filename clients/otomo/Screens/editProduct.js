@@ -10,7 +10,7 @@ import {
 } from '@ui-kitten/components';
 import {ScrollView} from 'react-native-gesture-handler';
 import axios from 'axios'
-export default class AddProduct extends Component {
+export default class EditProduct extends Component {
   state = {
     refreshing: false,
     image: '',
@@ -33,6 +33,35 @@ export default class AddProduct extends Component {
 
   onRefresh() {
     //Clear old data of the list
+    
+  }
+  componentDidMount(){
+let propsData = this.props.navigation.getParam('data')
+    const {
+        productName,image,price,description,category,
+        rules,location,latitude,
+        longitude,fuel,
+        hours,maxCap,
+        secMaxCap,toll,
+        deposit,insurance} = this.state;
+        this.setState({
+            productName:propsData.product_name,
+            image:propsData.image,
+            price:propsData.price.toString(),
+            description:propsData.description,
+            category:propsData.category,
+            rules:propsData.rules,
+            location:propsData.location,
+            latitude:propsData.latitude.toString(),
+            longitude:propsData.longitude.toString(),
+            fuel:propsData.fuel,
+            hours:propsData.hoursperDay.toString(),
+            maxCap:propsData.max_Capacity.toString(),
+            secMaxCap:propsData.max_secCapacity.toString(),
+            toll:propsData.toll_parkingCharge,
+            deposit:propsData.deposit,
+            insurance:propsData.insurance,
+        })
   }
 submitProduct=async ()=>{
   const {
@@ -48,15 +77,12 @@ const productData={
   max_secCapacity:secMaxCap,toll_parkingCharge:toll,deposit,insurance
 }
 try {
-  await axios.post('http://192.168.100.155:5080/product',productData).then((response)=>{
+    let propsData = this.props.navigation.getParam('data')
+  await axios.put(`http://192.168.100.155:5080/product/${propsData.id_product}`,productData).then((response)=>{
   console.log(response)
  
-}).then(()=>{
-  ToastAndroid.show('Add Product Succesfully',ToastAndroid.SHORT)
-}).then(()=>{setTimeout(()=>{
-  this.props.navigation.navigate('Home')
-},3000)})
- 
+})
+  ToastAndroid.show('Edit Product Succesfully',ToastAndroid.SHORT)
 } catch (error) {
   
   ToastAndroid.show(error.message,ToastAndroid.SHORT)
@@ -85,26 +111,10 @@ try {
       deposit,
       insurance,
     } = this.state;
-    // console.log(
-    //   refreshing,
-    //   productName,
-    //   image,
-    //   price,
-    //   description,
-    //   category,
-    //   rules,
-    //   location,
-    //   latitude,
-    //   longitude,
-    //   fuel,
-    //   hours,
-    //   maxCap,
-    //   secMaxCap,
-    //   toll,
-    //   deposit,
-    //   insurance,
-    // )
+    
+
     if (refreshing) {
+        
       return (
         //loading view while data is loading
         <View style={{flex: 1, paddingTop: 15}}>
@@ -117,7 +127,7 @@ try {
         <Layout style={{height: 30}}></Layout>
         <Layout>
           <Text category="h5" style={{textAlign: 'center'}}>
-            Add Product
+            Edit Product
           </Text>
         </Layout>
         <Layout style={{height: 30}}></Layout>
@@ -279,12 +289,7 @@ try {
             
             />
             <Button onPress={()=>{this.submitProduct()
-            this.setState({
-              image: '',productName: '',price: '',description: '',
-              category: '',rules: '',location: '',latitude: '',longitude: '',
-              fuel: '',hours: '',maxCap: '',secMaxCap: '',toll: '',deposit: '',
-              insurance: '',
-            })}}>Submit</Button>
+         }}>Submit</Button>
           </Layout>
           <Layout style={{height:30}}></Layout>
         </ScrollView>

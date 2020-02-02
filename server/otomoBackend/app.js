@@ -59,7 +59,7 @@ app.post('/upload',function(req,res,next){
 
 
 
-app.listen (process.env.PORT|| 5050,()=> console.log('express is running',));
+app.listen (process.env.PORT|| 5080,()=> console.log('express is running',));
 
 // app.use ('/', auth.login, router);
 module.exports = app

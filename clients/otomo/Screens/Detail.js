@@ -281,6 +281,10 @@ export default class Detail extends Component {
                   }}
                 />
               </Card>
+              
+              <Layout style={{alignItems:'center',}}>
+              
+                </Layout>
               <View style={{height: 20}}></View>
               <Layout level="1" style={{paddingVertical: 30}}>
                 <Card>
@@ -570,5 +574,16 @@ const styles = StyleSheet.create({
     width: 80,
     marginTop: 10,
     left: 20,
+  },
+  button4: {
+    textAlign: 'center',
+ 
+    width: 120,
+    height:30,
+    color:'white',
+    // shadowColor:'black',
+    backgroundColor: '#a22937',
+    borderRadius: 5,
+    fontWeight: 'bold',
   },
 });

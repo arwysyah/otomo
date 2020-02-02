@@ -12,10 +12,6 @@ getHistory :()=>{
             reject(error)
         })
     })
-    
-
-
-
 },
 postHistory: body => {
     return new Promise((resolve, reject) => {

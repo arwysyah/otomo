@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import axios from 'axios';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -20,7 +21,6 @@ import {
 } from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-
 export default class Home extends Component {
   constructor() {
     super();
@@ -30,7 +30,7 @@ export default class Home extends Component {
       refreshing: false,
       horizontal: true,
       color: true,
-      article:[]
+      article: [],
     };
   }
 
@@ -44,19 +44,16 @@ export default class Home extends Component {
     await this.getArticle();
   }
   getArticle = () => {
-    
-    axios.get('http://192.168.100.155:5050/article').then((res)=>{
+    axios.get('http://192.168.100.155:5080/article').then(res => {
       this.setState({
         article: res.data.response,
       });
-
-    })
-    
+    });
   };
   GetData = async () => {
     //Service to get the data from the server to render
 
-    await axios.get('http://192.168.100.155:5050/product').then(res => {
+    await axios.get('http://192.168.100.155:5080/product').then(res => {
       // console.log(res,'res')
       this.setState({
         product: res.data.response,
@@ -90,14 +87,13 @@ export default class Home extends Component {
     });
   };
   formatNumber(num) {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
   }
-  handleArticle=()=>{
+  handleArticle = () => {
     Alert.alert(
       'Warning',
       `This article is not connected yet`,
       [
-        
         {
           text: 'Cancel',
           onPress: () => console.log('Cancel Pressed'),
@@ -107,6 +103,14 @@ export default class Home extends Component {
       ],
       {cancelable: false},
     );
+  };
+  removeProduct=async (id_product)=>{
+   await axios.delete(`http://192.168.100.155:5080/product/${id_product}`).then((res)=>{
+     console.log(res)
+   }).then(()=>{
+     ToastAndroid.show('Delete Succesfully',ToastAndroid.SHORT)
+   })
+   
   }
   render() {
     // console.log(response);
@@ -119,7 +123,7 @@ export default class Home extends Component {
         </View>
       );
     }
-    const {product, isLoading,article} = this.state;
+    const {product, isLoading, article} = this.state;
     // console.log(data);
     if (isLoading === true) {
       return (
@@ -132,14 +136,11 @@ export default class Home extends Component {
     return (
       //Returning the ListView
       <View style={styles.MainContainer}>
-        
-         
         <ScrollView
-        style={{backgroundColor:'white'}}
-          showsVerticalScrollIndicator={false}
+          style={{backgroundColor: 'white'}}
+          // showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={this.ListViewItemSeparator}
           enableEmptySections={true}
-      
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => (
             <Text
@@ -155,22 +156,18 @@ export default class Home extends Component {
               onRefresh={this.onRefresh.bind(this)}
             />
           }>
-            <View
-            style={styles.header}>
-            <View
-              style={styles.contact}>
+          <View style={styles.header}>
+            <View style={styles.contact}>
               <Icon name="phone" size={18} style={{justifyContent: 'center'}} />
               <Text style={{left: 10}}>+62-82369400291</Text>
             </View>
 
-            <View
-              style={styles.email}>
+            <View style={styles.email}>
               <Icon name="email" size={18} style={{justifyContent: 'center'}} />
               <Text style={{left: 10}}>customer@otomo.co</Text>
             </View>
           </View>
-           <View
-            style={styles.bigImage}>
+          <View style={styles.bigImage}>
             <Image
               source={require('./Assets/otomo.png')}
               style={{maxWidth: 150, maxHeight: 41, left: -10}}
@@ -187,14 +184,10 @@ export default class Home extends Component {
               style={{maxWidth: '100%', maxHeight: '30%'}}
             />
 
-            <Text
-              category="h6"
-              style={styles.note}>
+            <Text category="h6" style={styles.note}>
               Murah Atau Mewah
             </Text>
-            <Text
-              category="h5"
-              style={styles.note}>
+            <Text category="h5" style={styles.note}>
               Everyone's "RIDE" Choice
             </Text>
             <View style={{paddingHorizontal: 20, top: 20}}>
@@ -234,23 +227,24 @@ export default class Home extends Component {
                 <Text style={{textAlign: 'center'}}>24/7 HUMAN SUPPORT</Text>
               </Layout>
             </Layout>
-            <View style={{height:30}}></View>
+            <View style={{height: 30}}></View>
             <View style={{alignItems: 'center'}}>
               <Text style={styles.title} category="h3">
                 LISTINGS
               </Text>
             </View>
-            <View style={{height:30}}></View>
+            <View style={{height: 30}}></View>
             <ScrollView
-              // showsHorizontalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
               horizontal={true}
               style={styles.scroll}>
               <View style={{flexDirection: 'row'}}>
-                {product.map((data, index) => (
+                {product.reverse().map((data, index) => (
                   <View style={{paddingHorizontal: 10}} key={index}>
                     <Card
                       style={{
                         width: 230,
+                        height: 300,
                         justifyContent: 'center',
                         alignItems: 'center',
                         borderRadius: 10,
@@ -266,18 +260,39 @@ export default class Home extends Component {
                           style={styles.imageProduct}
                         />
                       </TouchableOpacity>
-                      <Text
-                        style={styles.productName}>
+                      <Text style={styles.productName}>
                         {data.product_name}
                       </Text>
-                      <Text
-                        style={styles.productName}>
+                      <Text style={styles.productName}>
                         Rp. {this.formatNumber(data.price)}
                       </Text>
-                      <Text
-                        style={styles.productName}>
-                        {data.location}
-                      </Text>
+                      <Text style={styles.productName}>{data.location}</Text>
+                      <Layout
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        <Button
+                      
+                        status='info'
+                       
+                          style={{alignItems: 'center'}}
+                          onPress={() =>
+                            this.props.navigation.navigate('EditProduct', {
+                              data: {...data},
+                            })
+                          }>
+                          Edit Product
+                        </Button>
+                        <Button
+                         status="danger"
+                          style={{alignItems: 'center'}}
+                          onPress={(id_product) =>
+                           this.removeProduct(data.id_product)
+                          }>
+                          Remove
+                        </Button>
+                      </Layout>
                     </Card>
                   </View>
                 ))}
@@ -292,11 +307,10 @@ export default class Home extends Component {
               BERITA TERBARU
             </Text>
           </Layout>
-         
+
           <Layout style={{top: 30}}>
             {article.map((articles, index) => {
               return (
-                
                 <Layout
                   key={index}
                   style={{
@@ -305,21 +319,23 @@ export default class Home extends Component {
                     borderRadius: 7,
                     paddingVertical: 35,
                   }}>
-                    <TouchableOpacity onPress={()=>{this.handleArticle()}}>
-                  <Image
-                    source={{uri: articles.image}}
-                    style={styles.article}
-                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.handleArticle();
+                    }}>
+                    <Image
+                      source={{uri: articles.image}}
+                      style={styles.article}
+                    />
                   </TouchableOpacity>
-                  <Layout level='4' style={{height:50}} >
-            <Text style={styles.note}>{articles.title}</Text>
-            </Layout>
+                  <Layout level="4" style={{height: 50}}>
+                    <Text style={styles.note}>{articles.title}</Text>
+                  </Layout>
                 </Layout>
               );
             })}
-            
           </Layout>
-          
+
           <Layout style={styles.footerlayout}>
             <View>
               <Text category="h4" style={{top: 10, color: 'white'}}>
@@ -438,7 +454,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scroll: {
-   
     flexDirection: 'row',
     height: 300,
   },
@@ -467,57 +482,57 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
 
     height: 400,
-    top: 40,
+    top: 60,
     backgroundColor: '#999',
   },
-  header:
-    {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      height: 35,
-      backgroundColor: 'gainsboro',
-      paddingHorizontal: 30,
-    },
-    bigImage:{
-      height: 60,
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-    },
-    contact:{
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-    },email:{
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    note:{
-      textAlign: 'center',
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 35,
+    backgroundColor: 'gainsboro',
+    paddingHorizontal: 30,
+  },
+  bigImage: {
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  contact: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  email: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  note: {
+    textAlign: 'center',
 
-      top: 10,
-      fontWeight: '400',
-      color: '#58595b',
-    },
-    imageProduct:{
-      height: 200,
-      width: 230,
-      justifyContent: 'center',
-      top: -20,
-    },productName:{
-      textAlign: 'center',
-      marginTop: 10,
-      fontSize: 18,
-    },
-    article:{
-      height: '100%',
-      width: '100%',
-      justifyContent: 'center',
-      top: -20,
-      borderRadius: 7,
-    }
-  
+    top: 10,
+    fontWeight: '400',
+    color: '#58595b',
+  },
+  imageProduct: {
+    height: 200,
+    width: 230,
+    justifyContent: 'center',
+    top: -20,
+  },
+  productName: {
+    textAlign: 'center',
+    marginTop: 10,
+    fontSize: 18,
+  },
+  article: {
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
+    top: -20,
+    borderRadius: 7,
+  },
 });
 // {this.state.data.map((d, i) => {
 //   return (

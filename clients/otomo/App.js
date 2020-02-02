@@ -1,7 +1,7 @@
 import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 import { mapping, light as lightTheme } from '@eva-design/eva';
 import React,{Component} from 'react';
-import {createAppContainer} from 'react-navigation';
+import {createAppContainer,createSwitchNavigator} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -9,7 +9,28 @@ import Home from './Screens/Home'
 import History from './Screens/History'
 import Detail from './Screens/Detail'
 import AddProduct from './Screens/addProduct'
+import EditProduct from './Screens/editProduct'
+import Register from './Screens/Register'
+import Login from './Screens/Login'
+import SplashScreen from './Screens/SplashScreen'
+const UserNavigator = createStackNavigator({
+  Login: {
+    screen: Login,
+    navigationOptions: {
+     
+      tabBarVisible: false,
+      headerShown: false,
+    },
+  },
+  Register: {
+    screen: Register,
+    navigationOptions: {
+      tabBarVisible: false,
+      headerShown: false,
 
+    },
+  },
+})
 
 const AppStack= createStackNavigator({
   Home :{
@@ -19,6 +40,10 @@ const AppStack= createStackNavigator({
     }},
     Detail:{
       screen:Detail,
+      
+    },
+    EditProduct:{
+      screen:EditProduct,
       
     }
   
@@ -104,8 +129,14 @@ const BottomNavigator = createBottomTabNavigator(
 
 
 
+const switchScreen = createSwitchNavigator({
+  Splash: SplashScreen,
+  AuthScreen: UserNavigator,
+  App: BottomNavigator,
+});
 
-const SwitchScreen = createAppContainer(BottomNavigator)
+
+const SwitchScreen = createAppContainer(switchScreen)
 
 class App extends Component{
   render(){
@@ -113,7 +144,7 @@ class App extends Component{
       <ApplicationProvider
       mapping={mapping}
       theme={lightTheme}>
- < SwitchScreen />
+ <SwitchScreen/>
      </ApplicationProvider>
      
     
@@ -121,3 +152,14 @@ class App extends Component{
   }
 }
 export default App
+
+// const DetailStack=createStackNavigator({
+//   Detail:{
+//     screen:Detail,
+    
+//   },
+//   EditProduct:{
+//     screen:EditProduct,
+    
+//   }
+// })

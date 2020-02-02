@@ -22,25 +22,6 @@ module.exports = {
            })
        })
     },
-    getUserById:(req,res)=>{
-        const id = req.params.id;
-        getUserById(id,(error,results)=>{
-            if(error){
-                console.log(error)
-                return;
-            }
-            if(!results){
-                return res.json({
-                    succes:0,
-                    message:"Data Not Found,Please Register"
-                })
-            }
-            return res.json({
-                status:1,
-                data:results
-            })
-        })
-    },
     getUsers:(req,res)=>{
         getUsers((error,results)=>{
             if(error){
@@ -51,47 +32,6 @@ module.exports = {
             success:1,
             data:results
         })
-        })
-    },
-    updateUser:(req,res)=>{
-        const body = req.body;
-        const salt = genSaltSync(10)
-        body.password = hashSync(body.password,salt)
-    updateUser(body,(error,results)=>{
-        if(error){
-            console.log(error)
-            return;
-        }
-        if(!results){
-            res.json({
-                succes:'0',
-                message:"record is not found"
-            })
-        }
-        return res.json({
-            success: 1,
-            message:"user success to update"
-        })
-
-    })
-
-    },
-    deleteUser:(req,res)=>{
-        const id = req.params.id;
-        deleteUser(id,(error,results)=>{
-            if(error){
-                console.log(error)
-            }
-            if(!results){
-                return res.json({
-                    success : 0,
-                    message : 'record not found'
-                })
-            }
-            return res.json({
-                succes:1,
-                message:"deleted succesfully"
-            })
         })
     },
     login :(req,res)=>{
