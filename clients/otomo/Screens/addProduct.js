@@ -49,10 +49,7 @@ const productData={
 }
 try {
   await axios.post('http://192.168.100.155:5080/product',productData).then((response)=>{
-  console.log(response)
- 
-}).then(()=>{
-  ToastAndroid.show('Add Product Succesfully',ToastAndroid.SHORT)
+    ToastAndroid.show('Add Product Succesfully',ToastAndroid.SHORT)
 }).then(()=>{setTimeout(()=>{
   this.props.navigation.navigate('Home')
 },3000)})
@@ -85,25 +82,7 @@ try {
       deposit,
       insurance,
     } = this.state;
-    // console.log(
-    //   refreshing,
-    //   productName,
-    //   image,
-    //   price,
-    //   description,
-    //   category,
-    //   rules,
-    //   location,
-    //   latitude,
-    //   longitude,
-    //   fuel,
-    //   hours,
-    //   maxCap,
-    //   secMaxCap,
-    //   toll,
-    //   deposit,
-    //   insurance,
-    // )
+   
     if (refreshing) {
       return (
         //loading view while data is loading

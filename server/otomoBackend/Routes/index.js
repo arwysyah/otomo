@@ -12,7 +12,7 @@ Router.use('/product', product)
 
 Router.use('/user',User)
 
-Router.use('/history',history)
+Router.use('/transaction',history)
 Router.use('/article',article)
 
 

@@ -15,7 +15,7 @@ export default class Register extends Component {
     password:''
   };
 SignUp=async()=>{
-    console.log('hei')
+    
     const{username,email,password}=this.state
     const formUser={
         username,email,password
@@ -78,10 +78,10 @@ SignUp=async()=>{
             this.setState({username:'',password:'',email:''})
             }}>Sign Up </Button>
           </Layout>
-          <Layout style={{height:30,top:8}}>
-              <TouchableOpacity>
-              <Text category="h6">Sign In</Text>
-              </TouchableOpacity>
+          <Layout style={{height:50,top:8}}>
+              <Button onPress={()=>this.props.navigation.navigate('Login')}>
+             Sign In
+              </Button>
           </Layout>
         </ScrollView>
       </Layout>

@@ -11,10 +11,9 @@ module.exports = {
   },
   postHistory: (req, res) => {
     //  const bodyReq = req.body;
-    var date = new Date();
+    
     const body = {
-      ...req.body,
-      transaction_at: date
+      ...req.body
     };
     // console.log(body)
     Model.postHistory(body)

@@ -20,6 +20,7 @@ import {
   Layout,
 } from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Home extends Component {
   constructor() {
@@ -112,14 +113,22 @@ export default class Home extends Component {
    })
    
   }
+  logOut=async()=>{
+    await AsyncStorage.removeItem('jwt')
+    ToastAndroid.show('Logout Succesfuly',ToastAndroid.SHORT)
+    
+ this.props.navigation.navigate('Login')
+  }
   render() {
+    const async= AsyncStorage.getItem('jwt')
+    console.log(async)
     // console.log(response);
 
     if (this.state.refreshing) {
       return (
         //loading view while data is loading
         <View style={{flex: 1, paddingTop: 15}}>
-          <ActivityIndicator size="small" color="#00ff00" />
+          <Spinner size="small" color="#00ff00" />
         </View>
       );
     }
@@ -172,10 +181,11 @@ export default class Home extends Component {
               source={require('./Assets/otomo.png')}
               style={{maxWidth: 150, maxHeight: 41, left: -10}}
             />
+  <Text category='h4'></Text>
             <TouchableOpacity
-              style={{backgroundColor: this.state.color ? 'white' : 'green'}}
-              onPress={() => this.changeColor()}>
-              <Icon name="format-list-bulleted" size={30} />
+              
+              onPress={() => this.logOut()}>
+              <Icon name="logout" size={30} color={'red'} />
             </TouchableOpacity>
           </View>
           <View style={{justifyContent: 'center'}}>

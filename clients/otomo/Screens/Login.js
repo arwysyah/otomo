@@ -15,13 +15,13 @@ export default class Login extends Component {
     password:''
   };
 SignIn=async()=>{
-    console.log('hei')
+    
     const{email,password}=this.state
     const formUser={email,password
     }
     try {
         await axios.post('http://192.168.100.155:5080/user/login',formUser).then((response)=>{
-    console.log(response)
+    // console.log(response)
     ToastAndroid.show(response.data.message,ToastAndroid.SHORT)
     AsyncStorage.setItem('jwt', response.data.token)
     
@@ -76,10 +76,11 @@ SignIn=async()=>{
             this.setState({umail:'',password})
             }}>Sign In </Button>
           </Layout>
-          <Layout style={{height:30,top:8}}>
-              <TouchableOpacity>
-              <Text category="h6">Sign Up</Text>
-              </TouchableOpacity>
+          <Layout style={{height:50,top:8}}>
+              <Button onPress={()=>this.props.navigation.navigate('Register')}>
+                  Sign Up
+              {/* <Text category="h6">Sign Up</Text> */}
+              </Button>
           </Layout>
         </ScrollView>
       </Layout>

@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  ToastAndroid,
 } from 'react-native';
 import axios from 'axios';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -50,19 +51,9 @@ export default class Detail extends Component {
         isLoading: false,
       });
     }, 3000);
-    this.GetData()
+ 
   }
   
-  GetData = () => {
-    //Service to get the data from the server to render
-
-    axios.get('http://jsonplaceholder.typicode.com/posts').then(res => {
-      this.setState({
-        data: res.data,
-        isLoading: !this.state.isLoading,
-      });
-    });
-  };
   ListViewItemSeparator = () => {
     return (
       //returning the listview item saparator view
@@ -80,13 +71,12 @@ export default class Detail extends Component {
 
     this.setState({ isLoading: true});
     //Call the Service to get the latest data
-    this.GetData();
-    this.GetDatase();
+  
   }
   
   handleGetDirections = () => {
     let propsData = this.props.navigation.getParam('data');
-    console.log(propsData, 'part');
+    // console.log(propsData, 'part');
     const newData = {
       //  source: {
       //   latitude: -7.797068,
@@ -134,7 +124,29 @@ export default class Detail extends Component {
    formatNumber(num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
-  
+  handleBooking=async (startDate,endDate,totalPrice)=>{
+    const propsData=this.props.navigation.getParam('data')
+    const formTransaction ={
+      product_name:propsData.product_name,
+      image:propsData.image,
+      price:propsData.price,
+      total:totalPrice,
+      start_date:startDate,
+      end_date:endDate,
+     
+    }
+    try {
+      await axios.post('http://192.168.100.155:5080/transaction',formTransaction).then((response)=>{
+        console.log(response)
+        ToastAndroid.show('Transaction Succesfully',ToastAndroid.SHORT)
+      })
+      
+    } catch (error) {
+      ToastAndroid.show(error.message,ToastAndroid.SHORT)
+      
+    }
+   
+  }
   render() {
     const propsData = this.props.navigation.getParam('data');
     // console.log(propsData);
@@ -152,15 +164,16 @@ export default class Detail extends Component {
 
     const minDate = new Date(); // Today
     const maxDate = new Date(2022, 6, 3);
-    let startDate  =  selectedStartDate ? selectedStartDate.toString() : '';
-    let  endDate = selectedEndDate ? selectedEndDate.toString() : '';
+    // let startDate  =  selectedStartDate ? selectedStartDate.toString() : '';
+    // let  endDate = selectedEndDate ? selectedEndDate.toString() : '';
     const oneDay = 24 * 60 * 60 * 1000; 
-    let startDates  =  selectedStartDate ? selectedStartDate : '';
-    let  endDates = selectedEndDate ? selectedEndDate: '';
-    const diffDays = Math.round(Math.abs((Number(endDates)-Number(startDates)) / oneDay)+1)
+    let startDate  =  selectedStartDate ? selectedStartDate : '';
+   
+    let  endDate = selectedEndDate ? selectedEndDate: '';
+    const diffDays = Math.round(Math.abs((Number(endDate)-Number(startDate)) / oneDay)+1)
     const totalPrice= diffDays*propsData.price
     // let sumDate=Number(endDate)-Number(startDate)
-    console.log('sum',Number(diffDays))
+    // console.log('sum',Number(diffDays))
     // console.log(data);
     if (isLoading === true) {
       return (
@@ -407,10 +420,14 @@ export default class Detail extends Component {
         />
  
         <View style={{alignItems:'center',paddingHorizontal:20}}>
-              <Text> Start Date:  {this.dateFormats(startDates)}</Text>
-               <Text>  End Date : {this.dateFormats(endDates)}</Text>
-               <Text>  Price : Rp. {this.formatNumber(totalPrice)}</Text>
+              <Text> Start Date:  {this.dateFormats(startDate)}</Text>
+               <Text>  End Date : {this.dateFormats(endDate)}</Text>
+               <Text>  Total Price : Rp. {this.formatNumber(totalPrice)}</Text>
         </View>
+        <Layout style={{alignItems:'center'}}>
+          <Button status='success' style={{width:200}}
+          onPress={()=>this.handleBooking(startDate,endDate,totalPrice)}> Booking </Button>
+        </Layout>
             </View>
           </View>
 
