@@ -9,9 +9,7 @@ const article= require('./articles')
 const Router = express.Router();
 
 Router.use('/product', product)
-
 Router.use('/user',User)
-
 Router.use('/transaction',history)
 Router.use('/article',article)
 

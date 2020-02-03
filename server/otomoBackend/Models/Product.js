@@ -15,7 +15,7 @@ module.exports = {
 
 filterProduct : (name)=> { 
     return new Promise((resolve,reject)=>{
-        db.query("SELECT * FROM product WHERE name LIKE CONCAT('%', ?,  '%')",[name],(error, status1)=>{
+        db.query("SELECT * FROM product WHERE product_name LIKE CONCAT('%', ?,  '%')",[name],(error, status1)=>{
             if (!error)
                 resolve(status1)//mencobanya di console.log dulu
              else

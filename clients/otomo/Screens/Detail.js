@@ -128,8 +128,10 @@ export default class Detail extends Component {
     const propsData=this.props.navigation.getParam('data')
     const formTransaction ={
       product_name:propsData.product_name,
+      id_product:propsData.id_product,
       image:propsData.image,
       price:propsData.price,
+      location:propsData.location,
       total:totalPrice,
       start_date:startDate,
       end_date:endDate,

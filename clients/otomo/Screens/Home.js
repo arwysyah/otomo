@@ -77,7 +77,7 @@ export default class Home extends Component {
   onRefresh() {
     //Clear old data of the list
 
-    this.setState({product: [], isLoading: true, response: []});
+    this.setState({product: [], isLoading: true});
     //Call the Service to get the latest data
     this.GetData();
     this.getArticle();
@@ -121,7 +121,7 @@ export default class Home extends Component {
   }
   render() {
     const async= AsyncStorage.getItem('jwt')
-    console.log(async)
+    // console.log(async)
     // console.log(response);
 
     if (this.state.refreshing) {
