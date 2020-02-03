@@ -1,11 +1,5 @@
 import React, {Component} from 'react';
-import {
-  View,
-  StyleSheet,
-  RefreshControl,
-  alert,
-  Image,
-} from 'react-native';
+import {View, StyleSheet,TouchableOpacity,Image} from 'react-native';
 import axios from 'axios';
 import {ScrollView} from 'react-native-gesture-handler';
 import {
@@ -14,21 +8,19 @@ import {
   Card,
   Layout,
   Input,
-  Button
+  Button,
 } from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 
 export default class Search extends Component {
   constructor() {
     super();
     this.state = {
       transcationData: [],
-      isLoading: false,
-      refreshing: false,
+      isLoading: true,
       horizontal: true,
-      search:"",
-      dataSearch:[]
+      search: '',
+      dataSearch: [],
     };
   }
 
@@ -38,54 +30,29 @@ export default class Search extends Component {
         isLoading: false,
       });
     }, 3000);
-  
   }
 
-
-  handleSearch=()=>{
-      const search= this.state.search
-      axios.get(`http://107.22.93.157:5080/product/filter/product/search/${search}`).then((response)=>{
-          console.log(response.data)
-          this.setState({
-              dataSearch:response.data.response,
-            //   isLoading: !this.state.isLoading
-          })
-      })
-  }
-
-  ListViewItemSeparator = () => {
-    return (
-      //returning the listview item saparator view
-      <View
-        style={{
-          height: 0.2,
-          width: '90%',
-          backgroundColor: '#808080',
-        }}
-      />
-    );
+  handleSearch = () => {
+    const search = this.state.search;
+    axios
+      .get(`http://107.22.93.157:5080/product/filter/product/search/${search}`)
+      .then(response => {
+        console.log(response.data);
+        this.setState({
+          dataSearch: response.data.response,
+        });
+      });
   };
-  onRefresh() {
-    //Clear old data of the list
 
-    this.setState({isLoading: true});
-  
-    
-  }
+ 
+
   formatNumber(num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
   }
 
   render() {
-    const {isLoading, refreshing,search,dataSearch} = this.state;
-    if (this.state.refreshing) {
-      return (
-        //loading view while data is loading
-        <View style={{flex: 1, paddingTop: 15}}>
-          <ActivityIndicator size="small" color="#00ff00" />
-        </View>
-      );
-    }
+    const {isLoading, search, dataSearch} = this.state;
+   
 
     if (isLoading === true) {
       return (
@@ -96,29 +63,9 @@ export default class Search extends Component {
     }
 
     return (
-      //Returning the ListView
+ 
       <View style={styles.MainContainer}>
-        <ScrollView
-          style={{backgroundColor: 'white'}}
-          // showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={this.ListViewItemSeparator}
-          enableEmptySections={true}
-          // horizontal={this.state.isHorizontal}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => (
-            <Text
-              style={styles.rowViewContainer}
-              onPress={() => alert(item.id)}>
-              {item.title}
-            </Text>
-          )}
-          refreshControl={
-            <RefreshControl
-              //refresh control used for the Pull to Refresh
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh.bind(this)}
-            />
-          }>
+        <ScrollView>
           <View
             style={{
               flexDirection: 'row',
@@ -160,51 +107,81 @@ export default class Search extends Component {
             />
           </View>
           <View style={{paddingHorizontal: 20, top: 20}}>
-          <Layout><Text category='h4'style={{textAlign:'center'}}>Search</Text></Layout>
-              <Card style={{borderColor: 'red'}}>
-                <Text>Masukkan Transportasi</Text>
-                <Input
-                  size="small"
-                  value={search}
-                  placeholder="Product Name"
-                  onChangeText={search => this.setState({search})}
-                />
-                <Button style={{backgroundColor: 'grey'}} status="warning"
-                onPress={()=>{this.handleSearch()}}>
-                  Search
-                </Button>
-              </Card>
-              </View>
-              <Layout style={20}></Layout>
-          <View>
-{dataSearch.map((data,index)=>{return(
-          <Layout style={{paddingHorizontal: 20,paddingVertical:10}} key={index}>
-            <Layout
-              style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-              <Card
-                style={{
-                  height: 220,
-                  width: 230,
-
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 10,
-                  
-                }}>
-                <Image
-                  source={{uri:data.image}}
-                  style={styles.imageProduct}
-                />
-
-                <Text style={styles.productName}>{data.product_name}</Text>
-                <Text style={styles.productName}>{data.location}</Text>
-                <Text style={styles.productName}>Rp. {this.formatNumber(data.price)}</Text>
-              </Card>
-              
+            <Layout>
+              <Text category="h4" style={{textAlign: 'center'}}>
+                Search
+              </Text>
             </Layout>
-          </Layout>
-          )})}
+            <Card style={{borderColor: 'red'}}>
+              <Text>Masukkan Transportasi</Text>
+              <Input
+                size="small"
+                value={search}
+                placeholder="Product Name"
+                onChangeText={search => this.setState({search})}
+              />
+              <Button
+                style={{backgroundColor: 'grey'}}
+                status="warning"
+                onPress={() => {
+                  this.handleSearch();
+                }}>
+                Search
+              </Button>
+            </Card>
           </View>
+          <Layout style={20}></Layout>
+          {dataSearch.length>0 ? (
+          <View style={{top:30}}>
+
+            {dataSearch.map((data, index) => {
+              return (
+                <Layout
+                  style={{paddingHorizontal: 20, paddingVertical: 10}}
+                  key={index}>
+                  <Layout
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                    }}>
+                       
+                    <Card
+                      style={{
+                        height: 250,
+                        width: 280,
+
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: 10,
+                      }}>
+                       
+           <TouchableOpacity onPress={()=>
+            this.props.navigation.navigate('Detail', {
+              data: {...data},
+            })}>
+                      <Image
+                        source={{uri: data.image}}
+                        style={styles.imageProduct}
+                      />
+                 
+                      <Text style={styles.productName}>
+                        {data.product_name}
+                      </Text>
+                      </TouchableOpacity>
+                      <Text style={styles.productName}>{data.location}</Text>
+                      <Text style={styles.productName}>
+                        Rp. {this.formatNumber(data.price)}
+                      </Text>
+                    
+                    </Card>
+                    
+                  </Layout>
+                </Layout>
+              );
+            })}
+          </View>
+          ):(<View style={{top:30,alignContent:'center'}}><Text style={{textAlign:'center'}}>
+            Data Not Found</Text></View>)}
           <Layout style={styles.footerlayout}>
             <View>
               <Text category="h4" style={{top: 10, color: 'white'}}>

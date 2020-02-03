@@ -20,16 +20,17 @@ SignUp=async()=>{
     const formUser={
         username,email,password
     }
-    try {
-        await axios.post('http://107.22.93.157:5080/user/register',formUser).then((response)=>{
-    ToastAndroid.show(response.data.message,ToastAndroid.SHORT)})
-    } catch (error) {
-        ToastAndroid.show(error.message,ToastAndroid.SHORT)
-        
-    }
 
-
-}
+    axios.post('http://107.22.93.157:5080/user/register',formUser)
+    .then(res => {
+  ToastAndroid.show("Register succes",ToastAndroid.SHORT)
+     
+    this.props.navigation.navigate('Login')
+      })
+      .catch(error=>{
+          console.log(error)
+      })
+  }
 
   render() {
       const{username,email,password}=this.state

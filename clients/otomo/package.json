@@ -16,6 +16,7 @@
     "@ui-kitten/components": "^4.3.2",
     "@ui-kitten/template-js": "^4.4.0-beta.3",
     "axios": "^0.19.2",
+    "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
     "react": "16.9.0",
     "react-native": "0.61.5",

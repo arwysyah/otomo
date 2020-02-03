@@ -49,7 +49,7 @@ export default class Detail extends Component {
 
   ListViewItemSeparator = () => {
     return (
-      //returning the listview item saparator view
+      
       <View
         style={{
           height: 0.2,
@@ -60,11 +60,11 @@ export default class Detail extends Component {
     );
   };
   onRefresh() {
-    //Clear old data of the list
+   
 
     this.setState({isLoading: true,transcationData:[]});
     this.getDataTransaction()
-    //Call the Service to get the latest data
+    
   }
 
   dateFormats = date_data => {

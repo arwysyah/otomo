@@ -21,6 +21,7 @@ import {
 } from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-community/async-storage';
+import decode from 'jwt-decode'
 
 export default class Home extends Component {
   constructor() {
@@ -32,6 +33,7 @@ export default class Home extends Component {
       horizontal: true,
       color: true,
       article: [],
+      profile:''
     };
   }
 
@@ -43,6 +45,18 @@ export default class Home extends Component {
     }, 3000);
     await this.GetData();
     await this.getArticle();
+    await this.getuserProfile()
+    
+  }
+
+  getuserProfile=async ()=>{
+    const userToken =  await AsyncStorage.getItem('jwt');
+    const user =  await decode(userToken);
+    console.log(user.result.username)
+    this.setState({
+      profile:user.result.username
+    })
+   
   }
   getArticle = () => {
     axios.get('http://107.22.93.157:5080/article').then(res => {
@@ -120,11 +134,10 @@ export default class Home extends Component {
  this.props.navigation.navigate('Login')
   }
   render() {
-    const async= AsyncStorage.getItem('jwt')
-    // console.log(async)
+    
     // console.log(response);
-
-    if (this.state.refreshing) {
+    const {product, isLoading, article,profile,refreshing} = this.state;
+    if (refreshing) {
       return (
         //loading view while data is loading
         <View style={{flex: 1, paddingTop: 15}}>
@@ -132,7 +145,7 @@ export default class Home extends Component {
         </View>
       );
     }
-    const {product, isLoading, article} = this.state;
+    
     // console.log(data);
     if (isLoading === true) {
       return (
@@ -143,11 +156,11 @@ export default class Home extends Component {
     }
 
     return (
-      //Returning the ListView
+      
       <View style={styles.MainContainer}>
         <ScrollView
           style={{backgroundColor: 'white'}}
-          // showsVerticalScrollIndicator={false}
+      
           ItemSeparatorComponent={this.ListViewItemSeparator}
           enableEmptySections={true}
           keyExtractor={(item, index) => index.toString()}
@@ -181,7 +194,7 @@ export default class Home extends Component {
               source={require('./Assets/otomo.png')}
               style={{maxWidth: 150, maxHeight: 41, left: -10}}
             />
-  <Text category='h4'></Text>
+  <Text category='h6' style={{color:'red'}}>Hai {profile}</Text>
             <TouchableOpacity
               
               onPress={() => this.logOut()}>
@@ -203,16 +216,16 @@ export default class Home extends Component {
             <View style={{paddingHorizontal: 20, top: 20}}>
               
               <Card style={{borderColor: 'red'}}>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate('Search')}>
+           
                 <Text>Masukkan Transportasi</Text>
                 <Input
                   style={{maxHeight: '50%'}}
-                  placeholder="Place your Text"
+                  placeholder=""
                   // value={value}
                   // onChangeText={setValue}
                 />
-                </TouchableOpacity>
-                <Button style={{backgroundColor: 'grey'}} status="warning">
+           
+                <Button style={{backgroundColor: 'grey'}} status="warning"  onPress={()=>this.props.navigation.navigate('Search')}>
                   Pencarian
                 </Button>
               </Card>
@@ -548,52 +561,3 @@ const styles = StyleSheet.create({
     borderRadius: 7,
   },
 });
-// {this.state.data.map((d, i) => {
-//   return (
-//     <View key={i}>
-//       <Text>{d.title}</Text>
-//       <Text>{d.body}</Text>
-//     </View>
-//   );
-// })}
-// <View></View>
-
-// <View
-// style={{
-//   flexDirection: 'row',
-//   justifyContent: 'space-around',
-//   color: 'white',
-//   top: 20,
-// }}>
-// <Icon
-//   name="map-marker-outline"
-//   size={18}
-//   style={{color: 'white'}}
-// />
-// <Text style={{color: 'white',textAlign:'left'}}category='c2'>
-//   Ariobimo Sentra Level 8, Jakarta, Indonesia, 12950
-// </Text>
-// </View>
-// <View
-// style={{
-//   flexDirection: 'row',
-//   justifyContent: 'space-around',
-
-//   top: 20,
-// }}>
-// <Icon name="phone" size={18} style={{color: 'white'}} />
-// <Text style={{ color: 'white'}}category='c2'>+62-82369400291</Text>
-// </View>
-
-// <View
-// style={{
-//   flexDirection: 'row',
-//   justifyContent: 'space-between',
-//   color: 'white',
-//   top: 20,
-// }}>
-// <Icon name="email" size={18} style={{color: 'white'}} />
-// <Text style={{ color: 'white'}} category='c2'>
-//   customer@otomo.co
-// </Text>
-// </View>
