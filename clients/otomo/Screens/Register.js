@@ -21,7 +21,7 @@ SignUp=async()=>{
         username,email,password
     }
     try {
-        await axios.post('http://192.168.100.155:5080/user/register',formUser).then((response)=>{
+        await axios.post('http://107.22.93.157:5080/user/register',formUser).then((response)=>{
     ToastAndroid.show(response.data.message,ToastAndroid.SHORT)})
     } catch (error) {
         ToastAndroid.show(error.message,ToastAndroid.SHORT)

@@ -20,7 +20,7 @@ SignIn=async()=>{
     const formUser={email,password
     }
     try {
-        await axios.post('http://192.168.100.155:5080/user/login',formUser).then((response)=>{
+        await axios.post('http://107.22.93.157:5080/user/login',formUser).then((response)=>{
     // console.log(response)
     ToastAndroid.show(response.data.message,ToastAndroid.SHORT)
     AsyncStorage.setItem('jwt', response.data.token)

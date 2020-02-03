@@ -13,18 +13,22 @@ import {
   Text,
   Card,
   Layout,
+  Input,
+  Button
 } from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
-export default class Detail extends Component {
+export default class Search extends Component {
   constructor() {
     super();
     this.state = {
       transcationData: [],
-      isLoading: true,
+      isLoading: false,
       refreshing: false,
       horizontal: true,
+      search:"",
+      dataSearch:[]
     };
   }
 
@@ -34,15 +38,17 @@ export default class Detail extends Component {
         isLoading: false,
       });
     }, 3000);
-    this.getDataTransaction()
+  
   }
 
 
-  getDataTransaction=()=>{
-      axios.get('http://107.22.93.157:5080/transaction').then((response)=>{
+  handleSearch=()=>{
+      const search= this.state.search
+      axios.get(`http://107.22.93.157:5080/product/filter/product/search/${search}`).then((response)=>{
+          console.log(response.data)
           this.setState({
-              transcationData:response.data.response,
-              isLoading: !this.state.isLoading
+              dataSearch:response.data.response,
+            //   isLoading: !this.state.isLoading
           })
       })
   }
@@ -62,25 +68,16 @@ export default class Detail extends Component {
   onRefresh() {
     //Clear old data of the list
 
-    this.setState({isLoading: true,transcationData:[]});
-    this.getDataTransaction()
-    //Call the Service to get the latest data
+    this.setState({isLoading: true});
+  
+    
   }
-
-  dateFormats = date_data => {
-    let arrDate = String(date_data)
-      .slice(0, 10)
-      .split('/')
-      .reverse();
-
-    return arrDate;
-  };
   formatNumber(num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
   }
 
   render() {
-    const {isLoading, refreshing,transcationData} = this.state;
+    const {isLoading, refreshing,search,dataSearch} = this.state;
     if (this.state.refreshing) {
       return (
         //loading view while data is loading
@@ -162,15 +159,32 @@ export default class Detail extends Component {
               style={{maxWidth: 150, maxHeight: 41, left: -10}}
             />
           </View>
-          <Layout><Text category='h4'style={{textAlign:'center'}}>History</Text></Layout>
-{transcationData.map((transaction,index)=>{return(
+          <View style={{paddingHorizontal: 20, top: 20}}>
+          <Layout><Text category='h4'style={{textAlign:'center'}}>Search</Text></Layout>
+              <Card style={{borderColor: 'red'}}>
+                <Text>Masukkan Transportasi</Text>
+                <Input
+                  size="small"
+                  value={search}
+                  placeholder="Product Name"
+                  onChangeText={search => this.setState({search})}
+                />
+                <Button style={{backgroundColor: 'grey'}} status="warning"
+                onPress={()=>{this.handleSearch()}}>
+                  Search
+                </Button>
+              </Card>
+              </View>
+              <Layout style={20}></Layout>
+          <View>
+{dataSearch.map((data,index)=>{return(
           <Layout style={{paddingHorizontal: 20,paddingVertical:10}} key={index}>
             <Layout
               style={{flexDirection: 'row', justifyContent: 'space-around'}}>
               <Card
                 style={{
-                  height: 190,
-                  width: 180,
+                  height: 220,
+                  width: 230,
 
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -178,24 +192,19 @@ export default class Detail extends Component {
                   
                 }}>
                 <Image
-                  source={{uri:transaction.image}}
+                  source={{uri:data.image}}
                   style={styles.imageProduct}
                 />
 
-                <Text style={styles.productName}>{transaction.product_name}</Text>
+                <Text style={styles.productName}>{data.product_name}</Text>
+                <Text style={styles.productName}>{data.location}</Text>
+                <Text style={styles.productName}>Rp. {this.formatNumber(data.price)}</Text>
               </Card>
-              <Layout>
-              <Text category='h6'style={{textAlign:'center'}}>Start Date</Text>
-                <Text style={styles.productName}>{this.dateFormats(transaction.start_date)}</Text>
-                <Text category='h6' style={{textAlign:'center'}}>Start Date</Text>
-                <Text style={styles.productName}>{this.dateFormats(transaction.end_date)}</Text>
-                <Text style={styles.productName}>{transaction.location}</Text>
-                <Text style={styles.productName}>Total</Text>
-            <Text style={styles.productName}>Total: Rp{this.formatNumber(transaction.total)}</Text>
-              </Layout>
+              
             </Layout>
           </Layout>
           )})}
+          </View>
           <Layout style={styles.footerlayout}>
             <View>
               <Text category="h4" style={{top: 10, color: 'white'}}>

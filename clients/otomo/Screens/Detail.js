@@ -138,7 +138,7 @@ export default class Detail extends Component {
      
     }
     try {
-      await axios.post('http://192.168.100.155:5080/transaction',formTransaction).then((response)=>{
+      await axios.post('http://107.22.93.157:5080/transaction',formTransaction).then((response)=>{
         console.log(response)
         ToastAndroid.show('Transaction Succesfully',ToastAndroid.SHORT)
       })
@@ -255,7 +255,9 @@ export default class Detail extends Component {
             </TouchableOpacity>
           </View>
           <View style={{justifyContent: 'center'}}>
+           
             <View style={{paddingHorizontal: 20, top: 20}}>
+          
               <Card style={{borderColor: 'red'}}>
                 <Text>Masukkan Transportasi</Text>
                 <Input
@@ -264,10 +266,12 @@ export default class Detail extends Component {
                   // value={value}
                   // onChangeText={setValue}
                 />
-                <Button style={{backgroundColor: 'grey'}} status="warning">
+                <Button style={{backgroundColor: 'grey'}} status="warning"
+                onPress={()=>this.props.navigation.navigate('Search')}>
                   Search
                 </Button>
               </Card>
+       
               <Layout style={{height: 20}}></Layout>
               <View style={{alignItems: 'center'}}>
                 <Text style={styles.title} category="h5">

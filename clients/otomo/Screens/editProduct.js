@@ -37,13 +37,7 @@ export default class EditProduct extends Component {
   }
   componentDidMount(){
 let propsData = this.props.navigation.getParam('data')
-    const {
-        productName,image,price,description,category,
-        rules,location,latitude,
-        longitude,fuel,
-        hours,maxCap,
-        secMaxCap,toll,
-        deposit,insurance} = this.state;
+  
         this.setState({
             productName:propsData.product_name,
             image:propsData.image,
@@ -78,7 +72,7 @@ const productData={
 }
 try {
     let propsData = this.props.navigation.getParam('data')
-  await axios.put(`http://192.168.100.155:5080/product/${propsData.id_product}`,productData).then((response)=>{
+  await axios.put(`http://107.22.93.157:5080/product/${propsData.id_product}`,productData).then((response)=>{
   console.log(response)
  
 })

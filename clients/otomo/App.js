@@ -13,6 +13,7 @@ import EditProduct from './Screens/editProduct'
 import Register from './Screens/Register'
 import Login from './Screens/Login'
 import SplashScreen from './Screens/SplashScreen'
+import Search from './Screens/Search'
 const UserNavigator = createStackNavigator({
   Login: {
     screen: Login,
@@ -44,6 +45,10 @@ const AppStack= createStackNavigator({
     },
     EditProduct:{
       screen:EditProduct,
+      
+    },
+   Search:{
+      screen:Search,
       
     }
   

@@ -45,7 +45,7 @@ export default class Home extends Component {
     await this.getArticle();
   }
   getArticle = () => {
-    axios.get('http://192.168.100.155:5080/article').then(res => {
+    axios.get('http://107.22.93.157:5080/article').then(res => {
       this.setState({
         article: res.data.response,
       });
@@ -54,7 +54,7 @@ export default class Home extends Component {
   GetData = async () => {
     //Service to get the data from the server to render
 
-    await axios.get('http://192.168.100.155:5080/product').then(res => {
+    await axios.get('http://107.22.93.157:5080/product').then(res => {
       // console.log(res,'res')
       this.setState({
         product: res.data.response,
@@ -106,7 +106,7 @@ export default class Home extends Component {
     );
   };
   removeProduct=async (id_product)=>{
-   await axios.delete(`http://192.168.100.155:5080/product/${id_product}`).then((res)=>{
+   await axios.delete(`http://107.22.93.157:5080/product/${id_product}`).then((res)=>{
      console.log(res)
    }).then(()=>{
      ToastAndroid.show('Delete Succesfully',ToastAndroid.SHORT)
@@ -201,7 +201,9 @@ export default class Home extends Component {
               Everyone's "RIDE" Choice
             </Text>
             <View style={{paddingHorizontal: 20, top: 20}}>
+              
               <Card style={{borderColor: 'red'}}>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('Search')}>
                 <Text>Masukkan Transportasi</Text>
                 <Input
                   style={{maxHeight: '50%'}}
@@ -209,10 +211,12 @@ export default class Home extends Component {
                   // value={value}
                   // onChangeText={setValue}
                 />
+                </TouchableOpacity>
                 <Button style={{backgroundColor: 'grey'}} status="warning">
                   Pencarian
                 </Button>
               </Card>
+              
             </View>
             <Layout style={styles.containerlayout}>
               <Layout style={styles.layout} level="1">

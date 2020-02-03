@@ -48,7 +48,7 @@ const productData={
   max_secCapacity:secMaxCap,toll_parkingCharge:toll,deposit,insurance
 }
 try {
-  await axios.post('http://192.168.100.155:5080/product',productData).then((response)=>{
+  await axios.post('http://107.22.93.157:5080/product',productData).then((response)=>{
     ToastAndroid.show('Add Product Succesfully',ToastAndroid.SHORT)
 }).then(()=>{setTimeout(()=>{
   this.props.navigation.navigate('Home')
